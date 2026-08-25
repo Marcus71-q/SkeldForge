@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.9</Version>
+    <AssemblyVersion>1.0.9.0</AssemblyVersion>
+    <FileVersion>1.0.9.0</FileVersion>
+    <Authors>NyxShade</Authors>
+    <Company>NyxShade</Company>
+    <Product>SkeldForge - Among Us Mod Manager</Product>
+    <Copyright>Copyright © 2026 NyxShade</Copyright>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>

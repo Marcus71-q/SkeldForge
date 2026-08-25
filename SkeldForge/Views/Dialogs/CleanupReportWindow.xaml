@@ -1,0 +1,30 @@
+<Window x:Class="SkeldForge.Views.Dialogs.CleanupReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:SkeldForge.UI.Markup"
+        Title="{loc:Loc Cleanup.ReportTitle}" Width="700" Height="700"
+        WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ShowInTaskbar="False">
+    <Border Background="{StaticResource SurfaceRaisedBrush}" BorderBrush="{StaticResource BorderStrongBrush}" BorderThickness="1" CornerRadius="12">
+        <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Margin="24,20,18,16" MouseLeftButtonDown="Header_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{loc:Loc Cleanup.ReportTitle}" FontSize="22" FontWeight="SemiBold"/><Button Grid.Column="1" Content="&#xE8BB;" Style="{StaticResource IconButton}" IsCancel="True"/></Grid>
+            <ScrollViewer Grid.Row="1" Style="{StaticResource PageScrollViewer}">
+                <StackPanel Margin="24,0,24,22">
+                    <Border Style="{StaticResource Card}" Background="{StaticResource SuccessDarkBrush}" Visibility="{Binding Report.Success, Converter={StaticResource BoolToVisibility}}"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE73E;" FontFamily="Segoe Fluent Icons" Foreground="{StaticResource SuccessBrush}" FontSize="18" Margin="0,0,12,0"/><TextBlock Text="{loc:Loc Cleanup.Complete}" FontWeight="SemiBold" VerticalAlignment="Center"/></StackPanel></Border>
+                    <ItemsControl ItemsSource="{Binding Sections}" Margin="0,16,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Expander IsExpanded="True" Margin="0,0,0,10" Foreground="{StaticResource TextPrimaryBrush}">
+                                    <Expander.Header><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Title}" FontWeight="SemiBold"/><Border Style="{StaticResource Badge}" Margin="9,0,0,0" Padding="6,2"><TextBlock Text="{Binding Items.Count}" Foreground="{StaticResource AccentBrush}" FontSize="10"/></Border></StackPanel></Expander.Header>
+                                    <Border Style="{StaticResource Card}" Margin="0,8,0,0" Padding="13"><StackPanel><ItemsControl ItemsSource="{Binding Items}"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" FontFamily="Cascadia Mono, Consolas" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,3"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl><TextBlock Text="{loc:Loc Common.None}" Foreground="{StaticResource TextMutedBrush}" Visibility="{Binding Items.Count, Converter={StaticResource InverseCountToVisibility}}"/></StackPanel></Border>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+            <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="24,16"><Button Content="{loc:Loc Common.Close}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" IsCancel="True"/></Border>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>SkeldForge</RootNamespace>
+    <AssemblyName>SkeldForge</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationTitle>SkeldForge</ApplicationTitle>
+    <ApplicationIcon>Assets\SkeldForge.ico</ApplicationIcon>
+    <Version>1.0.10</Version>
+    <AssemblyVersion>1.0.10.0</AssemblyVersion>
+    <FileVersion>1.0.10.0</FileVersion>
+    <Description>SkeldForge v1.0.10 - Among Us Mod Manager. Created by NyxShade.</Description>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\skeldforge-logo.png" />
+    <Resource Include="Assets\SkeldForge.ico" />
+    <InternalsVisibleTo Include="SkeldForge.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Languages\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

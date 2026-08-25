@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+TestResults/
+artifacts/
+*.user
+*.suo
+*.log
+*.pdb
+SkeldForgeData/

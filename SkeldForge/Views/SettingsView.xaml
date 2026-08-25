@@ -1,0 +1,45 @@
+<UserControl x:Class="SkeldForge.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:SkeldForge.UI.Markup">
+    <ScrollViewer Style="{StaticResource PageScrollViewer}">
+        <StackPanel Margin="38,32,38,42" MaxWidth="920" HorizontalAlignment="Left">
+            <TextBlock Text="{loc:Loc Settings.Eyebrow}" Style="{StaticResource PageEyebrow}"/>
+            <TextBlock Text="{loc:Loc Settings.Title}" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="{loc:Loc Settings.Description}" Style="{StaticResource PageDescription}" Margin="0,8,0,0"/>
+
+            <Border Style="{StaticResource Card}" Margin="0,26,0,0" Padding="22">
+                <StackPanel>
+                    <TextBlock Text="{loc:Loc Settings.Language}" Style="{StaticResource SectionTitle}"/>
+                    <ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedLanguage}" Width="220" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0" Padding="22">
+                <StackPanel>
+                    <TextBlock Text="{loc:Loc Settings.GamePath}" Style="{StaticResource SectionTitle}"/>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox Text="{Binding GamePath}" IsReadOnly="True" Margin="0,0,10,0"/><Button Grid.Column="1" Content="{loc:Loc Settings.Change}" Command="{Binding BrowseGameCommand}"/></Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0" Padding="22">
+                <StackPanel>
+                    <TextBlock Text="{loc:Loc Settings.DataFolder}" Style="{StaticResource SectionTitle}"/>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox Text="{Binding DataRoot}" IsReadOnly="True" Margin="0,0,10,0"/><Button Grid.Column="1" Content="{loc:Loc Settings.Change}" Command="{Binding BrowseDataCommand}"/></Grid>
+                    <TextBlock Text="{loc:Loc Settings.DataMoveNote}" Foreground="{StaticResource WarningBrush}" FontSize="11" Margin="0,9,0,0"/>
+                    <TextBlock Text="{loc:Loc Settings.BackupFolder}" Style="{StaticResource SectionTitle}" Margin="0,24,0,10"/>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox Text="{Binding BackupRoot}" IsReadOnly="True" Margin="0,0,10,0"/><Button Grid.Column="1" Content="{loc:Loc Settings.Change}" Command="{Binding BrowseBackupCommand}"/></Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0" Padding="22">
+                <StackPanel>
+                    <TextBlock Text="{loc:Loc Common.Open}" Style="{StaticResource SectionTitle}"/>
+                    <WrapPanel><Button Content="{loc:Loc Settings.OpenLogs}" Command="{Binding OpenLogsCommand}" Margin="0,0,9,9"/><Button Content="{loc:Loc Settings.OpenInstances}" Command="{Binding OpenInstancesCommand}" Margin="0,0,9,9"/><Button Content="{loc:Loc Settings.OpenLibrary}" Command="{Binding OpenLibraryCommand}" Margin="0,0,9,9"/></WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,18,0,0"><Button Content="{loc:Loc Common.Save}" Style="{StaticResource PrimaryButton}" Command="{Binding SaveCommand}" MinWidth="120" Margin="0,0,10,0"/><Button Content="{loc:Loc Settings.Reset}" Style="{StaticResource DangerButton}" Command="{Binding ResetCommand}"/></StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

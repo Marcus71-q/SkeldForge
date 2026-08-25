@@ -1,0 +1,24 @@
+<UserControl x:Class="SkeldForge.Views.ModLibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:SkeldForge.UI.Markup">
+    <Grid Margin="38,32,38,36">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="{loc:Loc ModLibrary.Eyebrow}" Style="{StaticResource PageEyebrow}"/><TextBlock Text="{loc:Loc ModLibrary.Title}" Style="{StaticResource PageTitle}"/><TextBlock Text="{loc:Loc ModLibrary.Description}" Style="{StaticResource PageDescription}" Margin="0,8,0,0"/></StackPanel><StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom"><Button Content="{loc:Loc ModLibrary.OpenFolder}" Command="{Binding OpenFolderCommand}" Margin="0,0,10,0"/><Button Content="{loc:Loc ModLibrary.Import}" Style="{StaticResource PrimaryButton}" Command="{Binding ImportCommand}"/></StackPanel></Grid>
+        <Grid Grid.Row="1" Margin="0,25,0,18"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="190"/></Grid.ColumnDefinitions><Grid Margin="0,0,12,0"><TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" ToolTip="{loc:Loc ModLibrary.Search}"/><TextBlock Text="{loc:Loc ModLibrary.Search}" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="13,0" IsHitTestVisible="False" Visibility="{Binding SearchText, Converter={StaticResource InverseStringToVisibility}}"/></Grid><ComboBox Grid.Column="1" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSort}"/></Grid>
+        <ScrollViewer Grid.Row="2" Style="{StaticResource PageScrollViewer}">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding ModsView}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Card}" Margin="0,0,0,9" Padding="17">
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="42"/><ColumnDefinition Width="*"/><ColumnDefinition Width="125"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Width="32" Height="32" CornerRadius="8" Background="{StaticResource AccentDarkBrush}" HorizontalAlignment="Left"><TextBlock Text="&#xE943;" FontFamily="Segoe Fluent Icons" Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1"><TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="{Binding ImportedText}" Foreground="{StaticResource TextMutedBrush}" FontSize="10" Margin="0,4,0,0"/></StackPanel><StackPanel Grid.Column="2"><TextBlock Text="{loc:Loc Common.Version}" Style="{StaticResource LabelText}"/><TextBlock Text="{Binding Version}" Foreground="{StaticResource TextSecondaryBrush}"/></StackPanel><StackPanel Grid.Column="3" Orientation="Horizontal"><Border Style="{StaticResource Badge}" Margin="0,0,9,0"><TextBlock Text="{Binding CompatibilityText}" Foreground="{StaticResource AccentBrush}" FontSize="9" FontWeight="Bold"/></Border><Button Content="{loc:Loc Common.Details}" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/></StackPanel></Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Border Style="{StaticResource Card}" Visibility="{Binding ModsView.IsEmpty, Converter={StaticResource BoolToVisibility}}"><TextBlock Text="{loc:Loc ModLibrary.Empty}" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" Margin="20"/></Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
