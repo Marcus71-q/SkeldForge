@@ -52,4 +52,23 @@ public sealed class ModPackageAndLibraryTests
         Assert.Equal(first.Value.Mod.Id, second.Value.Mod.Id);
         Assert.Single(await library.GetAllAsync());
     }
+
+    [Fact]
+    public async Task AnalyzerRemovesMultipleHarmlessWrapperDirectories()
+    {
+        using var temp = new TemporaryDirectory();
+        var package = temp.Combine("NestedMod.zip");
+        await TestArchive.CreateAsync(
+            package,
+            ("download/release/NestedMod/BepInEx/plugins/NestedMod.dll", "plugin"),
+            ("download/release/NestedMod/BepInEx/config/NestedMod.cfg", "Enabled=true"));
+
+        var analysis = await new ModPackageAnalyzer().AnalyzeAsync(package);
+
+        Assert.True(analysis.IsSafe, analysis.RejectionReason);
+        Assert.Equal("download/release/NestedMod/", analysis.ContentRootPrefix);
+        Assert.Contains(analysis.Entries, entry =>
+            entry.RelativePath.Equals("BepInEx/plugins/NestedMod.dll", StringComparison.OrdinalIgnoreCase));
+        Assert.True(analysis.HasPluginDlls);
+    }
 }

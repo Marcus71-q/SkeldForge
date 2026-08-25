@@ -120,25 +120,29 @@ public sealed partial class ModPackageAnalyzer
             return string.Empty;
         }
 
-        var firstSegments = files
-            .Select(x => x.Split('/', 2)[0])
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-        if (firstSegments.Length != 1 || files.Any(x => !x.Contains('/')))
+        var prefix = new List<string>();
+        while (files.All(x => x.Contains('/')))
         {
-            return string.Empty;
+            var firstSegments = files
+                .Select(x => x.Split('/', 2)[0])
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            if (firstSegments.Length != 1 || IsGameRootDirectory(firstSegments[0]))
+            {
+                break;
+            }
+
+            prefix.Add(firstSegments[0]);
+            files = files.Select(x => x[(x.IndexOf('/') + 1)..]).ToArray();
         }
 
-        var segment = firstSegments[0];
-        if (segment.Equals("BepInEx", StringComparison.OrdinalIgnoreCase) ||
-            segment.Equals("dotnet", StringComparison.OrdinalIgnoreCase) ||
-            segment.Equals("Among Us_Data", StringComparison.OrdinalIgnoreCase))
-        {
-            return string.Empty;
-        }
-
-        return segment + "/";
+        return prefix.Count == 0 ? string.Empty : string.Join('/', prefix) + "/";
     }
+
+    private static bool IsGameRootDirectory(string segment) =>
+        segment.Equals("BepInEx", StringComparison.OrdinalIgnoreCase) ||
+        segment.Equals("dotnet", StringComparison.OrdinalIgnoreCase) ||
+        segment.Equals("Among Us_Data", StringComparison.OrdinalIgnoreCase);
 
     private static void DetectStructure(ModPackageAnalysis result)
     {

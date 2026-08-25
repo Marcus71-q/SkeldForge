@@ -12,7 +12,7 @@ public enum ModSort { Name, ImportDate, Version, Status }
 
 public static class SkeldForgeVersion
 {
-    public const string Current = "1.0.10";
+    public const string Current = "1.0.11";
     public const int ConfigSchema = 1;
     public const int ModpackSchema = 1;
     public const int SkeldpackFormat = 1;

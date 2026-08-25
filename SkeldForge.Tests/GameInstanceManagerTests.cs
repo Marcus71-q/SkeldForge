@@ -41,6 +41,13 @@ public sealed class GameInstanceManagerTests
             Assert.NotEmpty(progressEvents);
             Assert.True(new GameDetector().Validate(modpack.GameDirectory).IsValid);
 
+            var sameNameResult = await manager.CreateAsync("TOHE Test", source.Path);
+            Assert.True(sameNameResult.Success, sameNameResult.TechnicalMessage);
+            var sameNameModpack = Assert.IsType<SkeldForge.Models.ModpackInfo>(sameNameResult.Value);
+            Assert.Equal(modpack.Name, sameNameModpack.Name);
+            Assert.NotEqual(modpack.Id, sameNameModpack.Id);
+            Assert.NotEqual(modpack.InstanceDirectory, sameNameModpack.InstanceDirectory);
+
             var packagePath = temp.Combine("SampleMod.zip");
             await TestArchive.CreateAsync(
                 packagePath,
@@ -69,6 +76,11 @@ public sealed class GameInstanceManagerTests
                 modpack.GameDirectory, "BepInEx", "plugins", "SampleMod.dll")));
             var installedMod = Assert.Single(modpack.Mods);
 
+            var installedInSecondPack = await modManager.InstallFromArchiveAsync(sameNameModpack, packagePath);
+            Assert.True(installedInSecondPack.Success, installedInSecondPack.TechnicalMessage);
+            Assert.True(File.Exists(System.IO.Path.Combine(
+                sameNameModpack.GameDirectory, "BepInEx", "plugins", "SampleMod.dll")));
+
             var disabled = await modManager.DisableAsync(modpack, installedMod.Id);
             Assert.True(disabled.Success, disabled.TechnicalMessage);
             Assert.False(File.Exists(System.IO.Path.Combine(
@@ -95,6 +107,7 @@ public sealed class GameInstanceManagerTests
                 loaderPackage,
                 ("BetterAmongUs/changelog.txt", "mod release notes"),
                 ("BetterAmongUs/doorstop_config.ini", "[General]\nenabled=true\ntarget_assembly=BepInEx\\core\\BepInEx.Unity.IL2CPP.dll\n[Il2Cpp]\ncoreclr_path=dotnet\\coreclr.dll\ncorlib_dir=dotnet"),
+                ("BetterAmongUs/BepInEx/core/BepInEx.Core.dll", "different bundled loader core"),
                 ("BetterAmongUs/BepInEx/plugins/BetterAmongUs.dll", "better among us payload"));
 
             var loaderInstalled = await modManager.InstallFromArchiveAsync(modpack, loaderPackage);
@@ -102,10 +115,13 @@ public sealed class GameInstanceManagerTests
             Assert.True(loaderInstalled.Success, loaderInstalled.TechnicalMessage);
             Assert.Equal(preservedDoorstop, await File.ReadAllTextAsync(System.IO.Path.Combine(modpack.GameDirectory, "doorstop_config.ini")));
             Assert.Equal("vanilla changelog", await File.ReadAllTextAsync(System.IO.Path.Combine(modpack.GameDirectory, "changelog.txt")));
+            Assert.Equal("loader core", await File.ReadAllTextAsync(System.IO.Path.Combine(
+                modpack.GameDirectory, "BepInEx", "core", "BepInEx.Core.dll")));
             Assert.True(File.Exists(System.IO.Path.Combine(modpack.GameDirectory, "BepInEx", "plugins", "BetterAmongUs.dll")));
             var loaderMod = Assert.Single(modpack.Mods);
             Assert.DoesNotContain(loaderMod.InstalledFiles, x => x.RelativePath.Equals("changelog.txt", StringComparison.OrdinalIgnoreCase));
-            Assert.True(loaderMod.InstalledFiles.Single(x => x.RelativePath.Equals("doorstop_config.ini", StringComparison.OrdinalIgnoreCase)).PreserveOnRemove);
+            Assert.DoesNotContain(loaderMod.InstalledFiles, x =>
+                x.RelativePath.Equals("doorstop_config.ini", StringComparison.OrdinalIgnoreCase));
 
             var loaderRemoved = await modManager.UninstallAsync(modpack, loaderMod.Id);
             Assert.True(loaderRemoved.Success, loaderRemoved.TechnicalMessage);

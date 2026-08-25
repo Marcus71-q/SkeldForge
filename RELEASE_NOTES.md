@@ -1,5 +1,13 @@
 # Release notes
 
+## 1.0.11
+
+- Allowed multiple isolated modpacks to use the same display name.
+- Kept each same-name modpack in a unique internal instance directory.
+- Allowed the same library mod to be installed independently in different modpacks.
+- Preserved instance-level BepInEx loader files when a full mod bundle contains another loader copy.
+- Improved detection of mod content nested under multiple ZIP wrapper directories.
+
 ## 1.0.10
 
 - Added a Windows installer with desktop and Start menu shortcuts.

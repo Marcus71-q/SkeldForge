@@ -3,14 +3,14 @@ Unicode True
 !include "MUI2.nsh"
 
 !define APP_NAME "SkeldForge"
-!define APP_VERSION "1.0.10"
+!define APP_VERSION "1.0.11"
 !define APP_PUBLISHER "NyxShade"
 !define APP_EXE "SkeldForge.exe"
 !define APP_ID "SkeldForge.NyxShade"
-!define PUBLISH_DIR "..\artifacts\github-release\SkeldForge-v1.0.10-win-x64"
+!define PUBLISH_DIR "..\artifacts\github-release\SkeldForge-v1.0.11-win-x64"
 
 Name "${APP_NAME} ${APP_VERSION}"
-OutFile "..\artifacts\github-release\SkeldForge-v1.0.10-Setup.exe"
+OutFile "..\artifacts\github-release\SkeldForge-v1.0.11-Setup.exe"
 InstallDir "$LOCALAPPDATA\Programs\SkeldForge"
 InstallDirRegKey HKCU "Software\${APP_ID}" "InstallLocation"
 RequestExecutionLevel user
@@ -20,7 +20,7 @@ BrandingText "${APP_NAME} • NyxShade"
 Icon "..\SkeldForge\Assets\SkeldForge.ico"
 UninstallIcon "..\SkeldForge\Assets\SkeldForge.ico"
 
-VIProductVersion "1.0.10.0"
+VIProductVersion "1.0.11.0"
 VIAddVersionKey /LANG=1055 "ProductName" "${APP_NAME}"
 VIAddVersionKey /LANG=1055 "ProductVersion" "${APP_VERSION}"
 VIAddVersionKey /LANG=1055 "CompanyName" "${APP_PUBLISHER}"

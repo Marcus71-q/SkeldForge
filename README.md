@@ -8,7 +8,7 @@ Created and maintained by **NyxShade**.
 
 ## Download
 
-Download `SkeldForge-v1.0.10-Setup.exe` from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
+Download `SkeldForge-v1.0.11-Setup.exe` from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
 
 Windows may show a SmartScreen warning because community builds are not code signed. Release hashes are published alongside each download.
 

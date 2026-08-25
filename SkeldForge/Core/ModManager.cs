@@ -148,6 +148,7 @@ public sealed class ModManager
             var installedMod = CloneForInstallation(libraryMod, analysis);
             installedMod.InstalledFiles = await BuildFileRecordsAsync(stageDirectory, cancellationToken)
                 .ConfigureAwait(false);
+            RemovePreExistingInstanceInfrastructure(modpack, installedMod);
             if (installedMod.InstalledFiles.Count == 0)
             {
                 return FailWithValue("ModPackageHasNoFiles", string.Empty,
@@ -816,6 +817,24 @@ public sealed class ModManager
                name.Equals("readme", StringComparison.OrdinalIgnoreCase) ||
                name.Equals("license", StringComparison.OrdinalIgnoreCase) ||
                name.Equals("licence", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void RemovePreExistingInstanceInfrastructure(ModpackInfo modpack, ModInfo incoming)
+    {
+        incoming.InstalledFiles.RemoveAll(record =>
+            IsInstanceInfrastructurePath(record.RelativePath) &&
+            File.Exists(ResolveGameTarget(modpack, record.RelativePath)));
+    }
+
+    private static bool IsInstanceInfrastructurePath(string relativePath)
+    {
+        var path = ConflictDetector.Normalize(relativePath);
+        return path.Equals(".doorstop_version", StringComparison.OrdinalIgnoreCase) ||
+               path.Equals("doorstop_config.ini", StringComparison.OrdinalIgnoreCase) ||
+               path.Equals("winhttp.dll", StringComparison.OrdinalIgnoreCase) ||
+               path.Equals("steam_appid.txt", StringComparison.OrdinalIgnoreCase) ||
+               path.StartsWith("BepInEx/core/", StringComparison.OrdinalIgnoreCase) ||
+               path.StartsWith("dotnet/", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsCompatiblePreservedInfrastructureFile(

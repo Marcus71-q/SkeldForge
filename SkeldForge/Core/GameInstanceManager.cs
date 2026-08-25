@@ -112,16 +112,8 @@ public sealed class GameInstanceManager
             }
 
             _paths.EnsureDataDirectories();
-            if (await NameExistsCoreAsync(normalizedName, null, cancellationToken).ConfigureAwait(false))
-            {
-                return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-            }
-
-            var destination = GetInstanceDirectory(normalizedName);
-            if (Directory.Exists(destination) || File.Exists(destination))
-            {
-                return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-            }
+            var instanceId = Guid.NewGuid().ToString("N");
+            var destination = GetInstanceDirectory(normalizedName, instanceId);
 
             var sourceSize = await _fileSystem.GetDirectorySizeAsync(source.Path, cancellationToken).ConfigureAwait(false);
             var diskSpace = await _fileSystem.CheckDiskSpaceAsync(destination, sourceSize, cancellationToken).ConfigureAwait(false);
@@ -178,7 +170,7 @@ public sealed class GameInstanceManager
             var now = DateTimeOffset.UtcNow;
             var modpack = new ModpackInfo
             {
-                Id = Guid.NewGuid().ToString("N"),
+                Id = instanceId,
                 Name = normalizedName,
                 Version = NormalizeVersion(modpackVersion),
                 InstanceDirectory = destination,
@@ -256,21 +248,13 @@ public sealed class GameInstanceManager
                 return OperationResult<ModpackInfo>.Fail(nameError);
             }
 
-            if (await NameExistsCoreAsync(normalizedName, null, cancellationToken).ConfigureAwait(false))
-            {
-                return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-            }
-
             if (!_gameDetector.Validate(source.GameDirectory).IsValid)
             {
                 return OperationResult<ModpackInfo>.Fail("Instance.Corrupted");
             }
 
-            var destination = GetInstanceDirectory(normalizedName);
-            if (Directory.Exists(destination) || File.Exists(destination))
-            {
-                return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-            }
+            var duplicateId = Guid.NewGuid().ToString("N");
+            var destination = GetInstanceDirectory(normalizedName, duplicateId);
 
             var size = await _fileSystem.GetDirectorySizeAsync(source.InstanceDirectory, cancellationToken).ConfigureAwait(false);
             var diskSpace = await _fileSystem.CheckDiskSpaceAsync(destination, size, cancellationToken).ConfigureAwait(false);
@@ -285,7 +269,7 @@ public sealed class GameInstanceManager
             await _fileSystem.CopyDirectoryAsync(
                 source.InstanceDirectory, stagingDirectory, false, progress, cancellationToken).ConfigureAwait(false);
 
-            source.Id = Guid.NewGuid().ToString("N");
+            source.Id = duplicateId;
             source.Name = normalizedName;
             source.InstanceDirectory = destination;
             source.GameDirectory = Path.Combine(destination, GameFolderName);
@@ -358,57 +342,20 @@ public sealed class GameInstanceManager
                 return OperationResult<ModpackInfo>.Fail(nameError);
             }
 
-            if (await NameExistsCoreAsync(normalizedName, id, cancellationToken).ConfigureAwait(false))
-            {
-                return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-            }
-
             EnsureManagedInstancePath(modpack.InstanceDirectory);
-            var oldDirectory = modpack.InstanceDirectory;
-            var newDirectory = GetInstanceDirectory(normalizedName);
             var oldName = modpack.Name;
-            var oldGameDirectory = modpack.GameDirectory;
-            string? intermediate = null;
-            var moved = false;
-
+            var oldUpdatedAt = modpack.UpdatedAt;
             try
             {
-                if (!oldDirectory.Equals(newDirectory, StringComparison.Ordinal))
-                {
-                    if (Directory.Exists(newDirectory) &&
-                        !oldDirectory.Equals(newDirectory, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return OperationResult<ModpackInfo>.Fail("Instance.NameExists");
-                    }
-
-                    intermediate = GetStagingDirectory(normalizedName, "renaming");
-                    Directory.Move(oldDirectory, intermediate);
-                    Directory.Move(intermediate, newDirectory);
-                    intermediate = null;
-                    moved = true;
-                }
-
                 modpack.Name = normalizedName;
-                modpack.InstanceDirectory = newDirectory;
-                modpack.GameDirectory = Path.Combine(newDirectory, GameFolderName);
                 modpack.UpdatedAt = DateTimeOffset.UtcNow;
                 await _fileSystem.AtomicWriteJsonAsync(
-                    Path.Combine(newDirectory, MetadataFileName), modpack, cancellationToken).ConfigureAwait(false);
+                    Path.Combine(modpack.InstanceDirectory, MetadataFileName), modpack, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
                 modpack.Name = oldName;
-                modpack.InstanceDirectory = oldDirectory;
-                modpack.GameDirectory = oldGameDirectory;
-                if (intermediate is not null && Directory.Exists(intermediate) && !Directory.Exists(oldDirectory))
-                {
-                    Directory.Move(intermediate, oldDirectory);
-                }
-                else if (moved && Directory.Exists(newDirectory) && !Directory.Exists(oldDirectory))
-                {
-                    Directory.Move(newDirectory, oldDirectory);
-                }
-
+                modpack.UpdatedAt = oldUpdatedAt;
                 throw;
             }
 
@@ -849,16 +796,8 @@ public sealed class GameInstanceManager
         => (await LoadAllCoreAsync(cancellationToken).ConfigureAwait(false))
             .FirstOrDefault(item => item.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
-    private async Task<bool> NameExistsCoreAsync(
-        string name,
-        string? excludingId,
-        CancellationToken cancellationToken)
-        => (await LoadAllCoreAsync(cancellationToken).ConfigureAwait(false)).Any(item =>
-            item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase) &&
-            !item.Id.Equals(excludingId, StringComparison.OrdinalIgnoreCase));
-
-    private string GetInstanceDirectory(string normalizedName)
-        => Path.Combine(_paths.InstancesDirectory, normalizedName);
+    private string GetInstanceDirectory(string normalizedName, string instanceId)
+        => Path.Combine(_paths.InstancesDirectory, $"{normalizedName}--{instanceId[..8]}");
 
     private string GetStagingDirectory(string name, string operation)
     {
