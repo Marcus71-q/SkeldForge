@@ -8,6 +8,7 @@ SkeldForge is a Windows mod manager for Among Us. It creates isolated game copie
 - The same mod can be installed independently in any number of modpacks.
 - Full BepInEx mod bundles no longer fail because an instance already contains loader files.
 - Mod files nested under several ZIP wrapper folders are mapped to the correct game root.
+- Loose DLL packages are automatically installed under `BepInEx/plugins`.
 
 ## Highlights
 

@@ -7,6 +7,7 @@
 - Allowed the same library mod to be installed independently in different modpacks.
 - Preserved instance-level BepInEx loader files when a full mod bundle contains another loader copy.
 - Improved detection of mod content nested under multiple ZIP wrapper directories.
+- Mapped loose single-DLL packages and their configuration files into the correct BepInEx folders.
 
 ## 1.0.10
 

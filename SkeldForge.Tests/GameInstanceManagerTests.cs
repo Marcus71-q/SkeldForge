@@ -126,6 +126,21 @@ public sealed class GameInstanceManagerTests
             var loaderRemoved = await modManager.UninstallAsync(modpack, loaderMod.Id);
             Assert.True(loaderRemoved.Success, loaderRemoved.TechnicalMessage);
             Assert.True(File.Exists(System.IO.Path.Combine(modpack.GameDirectory, "doorstop_config.ini")));
+
+            var loosePackage = temp.Combine("LoosePlugin.zip");
+            await TestArchive.CreateAsync(
+                loosePackage,
+                ("download/build/LoosePlugin.dll", "loose plugin payload"),
+                ("download/build/LoosePlugin.cfg", "Enabled=true"));
+
+            var looseInstalled = await modManager.InstallFromArchiveAsync(modpack, loosePackage);
+
+            Assert.True(looseInstalled.Success, looseInstalled.TechnicalMessage);
+            Assert.True(File.Exists(System.IO.Path.Combine(
+                modpack.GameDirectory, "BepInEx", "plugins", "LoosePlugin.dll")));
+            Assert.True(File.Exists(System.IO.Path.Combine(
+                modpack.GameDirectory, "BepInEx", "config", "LoosePlugin.cfg")));
+            Assert.False(File.Exists(System.IO.Path.Combine(modpack.GameDirectory, "LoosePlugin.dll")));
             Assert.Equal(sourceSnapshot, await SnapshotAsync(source.Path));
         }
         finally

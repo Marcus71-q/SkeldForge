@@ -144,6 +144,7 @@ public sealed class ModManager
                     progress,
                     cancellationToken)
                 .ConfigureAwait(false);
+            NormalizeLoosePluginPackage(stageDirectory);
 
             var installedMod = CloneForInstallation(libraryMod, analysis);
             installedMod.InstalledFiles = await BuildFileRecordsAsync(stageDirectory, cancellationToken)
@@ -817,6 +818,55 @@ public sealed class ModManager
                name.Equals("readme", StringComparison.OrdinalIgnoreCase) ||
                name.Equals("license", StringComparison.OrdinalIgnoreCase) ||
                name.Equals("licence", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void NormalizeLoosePluginPackage(string stageDirectory)
+    {
+        if (Directory.Exists(Path.Combine(stageDirectory, "BepInEx")) ||
+            File.Exists(Path.Combine(stageDirectory, "winhttp.dll")) ||
+            File.Exists(Path.Combine(stageDirectory, "doorstop_config.ini")))
+        {
+            return;
+        }
+
+        var dllFiles = Directory.EnumerateFiles(stageDirectory, "*.dll", SearchOption.AllDirectories).ToArray();
+        if (dllFiles.Length != 1)
+        {
+            return;
+        }
+
+        var pluginDirectory = Path.Combine(stageDirectory, "BepInEx", "plugins");
+        Directory.CreateDirectory(pluginDirectory);
+        var destination = Path.Combine(pluginDirectory, Path.GetFileName(dllFiles[0]));
+        if (!dllFiles[0].Equals(destination, StringComparison.OrdinalIgnoreCase))
+        {
+            File.Move(dllFiles[0], destination);
+        }
+
+        var configFiles = Directory.EnumerateFiles(stageDirectory, "*.cfg", SearchOption.AllDirectories)
+            .Where(path => !path.StartsWith(Path.Combine(stageDirectory, "BepInEx") + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (configFiles.Length == 1)
+        {
+            var configDirectory = Path.Combine(stageDirectory, "BepInEx", "config");
+            Directory.CreateDirectory(configDirectory);
+            File.Move(configFiles[0], Path.Combine(configDirectory, Path.GetFileName(configFiles[0])));
+        }
+
+        RemoveEmptyDirectories(stageDirectory);
+    }
+
+    private static void RemoveEmptyDirectories(string root)
+    {
+        foreach (var directory in Directory.EnumerateDirectories(root, "*", SearchOption.AllDirectories)
+                     .OrderByDescending(path => path.Length))
+        {
+            if (!Directory.EnumerateFileSystemEntries(directory).Any())
+            {
+                Directory.Delete(directory);
+            }
+        }
     }
 
     private static void RemovePreExistingInstanceInfrastructure(ModpackInfo modpack, ModInfo incoming)
