@@ -8,10 +8,11 @@ Unicode True
 !define APP_EXE "SkeldForge.exe"
 !define APP_ID "SkeldForge.NyxShade"
 !define PUBLISH_DIR "..\artifacts\github-release\SkeldForge-v1.0.12-win-x64"
+!define SAFE_INSTALL_DIR "$LOCALAPPDATA\Programs\SkeldForge"
 
 Name "${APP_NAME} ${APP_VERSION}"
 OutFile "..\artifacts\github-release\SkeldForge-v1.0.12-Setup.exe"
-InstallDir "$LOCALAPPDATA\Programs\SkeldForge"
+InstallDir "${SAFE_INSTALL_DIR}"
 InstallDirRegKey HKCU "Software\${APP_ID}" "InstallLocation"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -35,7 +36,6 @@ VIAddVersionKey /LANG=1055 "LegalCopyright" "Copyright © 2026 ${APP_PUBLISHER}"
 !define MUI_FINISHPAGE_RUN_TEXT "SkeldForge'u şimdi çalıştır"
 
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -48,6 +48,10 @@ VIAddVersionKey /LANG=1055 "LegalCopyright" "Copyright © 2026 ${APP_PUBLISHER}"
 
 Section "SkeldForge" SEC_MAIN
   SectionIn RO
+  ; Keep installation and recursive uninstall scoped to SkeldForge's dedicated
+  ; per-user directory. This also overrides an unsafe command-line /D value or
+  ; a modified legacy registry value.
+  StrCpy $INSTDIR "${SAFE_INSTALL_DIR}"
   SetOutPath "$INSTDIR"
   File /r "${PUBLISH_DIR}\*.*"
 
@@ -82,10 +86,23 @@ Section "Uninstall"
   RMDir /r "$SMPROGRAMS\SkeldForge"
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}"
   DeleteRegKey HKCU "Software\${APP_ID}"
-  RMDir /r "$INSTDIR"
+  ; Never recursively delete a caller-controlled or tampered install path.
+  StrCmp $INSTDIR "${SAFE_INSTALL_DIR}" 0 unsafe_install_path
+  RMDir /r "${SAFE_INSTALL_DIR}"
+  Goto install_cleanup_done
+
+  unsafe_install_path:
+    Delete "$INSTDIR\${APP_EXE}"
+    Delete "$INSTDIR\SkeldForge Deleter.exe"
+
+  install_cleanup_done:
   RMDir /r "$LOCALAPPDATA\SkeldForge"
   RMDir /r "$LOCALAPPDATA\SkeldForgeData"
 SectionEnd
+
+Function .onInit
+  StrCpy $INSTDIR "${SAFE_INSTALL_DIR}"
+FunctionEnd
 
 Function un.onInit
   MessageBox MB_ICONEXCLAMATION|MB_YESNO|MB_DEFBUTTON2 \

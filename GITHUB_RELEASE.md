@@ -12,6 +12,8 @@ SkeldForge is a Windows mod manager for Among Us. It creates isolated game copie
 - Loose DLL plugins use the same analysis, conflict detection and ownership tracking as ZIP packages.
 - DLL plugins are installed under `BepInEx/plugins` automatically.
 - The uninstaller also clears the fallback local SkeldForge data directory.
+- Installer and uninstaller cleanup is restricted to SkeldForge's dedicated per-user installation directory.
+- GitHub Actions and test infrastructure dependencies were updated to their current versions.
 
 ## Previous 1.0.11 improvements
 
@@ -51,7 +53,7 @@ The installer is self-contained; a separate .NET installation is not required.
 
 Windows SmartScreen may warn about an unknown publisher because this community build is not code signed. Verify the SHA-256 hash before running it:
 
-`276ABE8B21FA386E6C8AED9705414C561052B4A43F7CC1E5E26B4FDD6D3B33D7`
+`853D272286AB4DD3AF2B15AA335BB9D513547B22367DEF2A6B140282BCE632A9`
 
 ## How it works
 

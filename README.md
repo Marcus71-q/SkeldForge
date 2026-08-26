@@ -19,7 +19,7 @@ Windows may show a SmartScreen warning because community builds are not code sig
 SHA-256 for the official v1.0.12 installer:
 
 ```text
-276ABE8B21FA386E6C8AED9705414C561052B4A43F7CC1E5E26B4FDD6D3B33D7
+853D272286AB4DD3AF2B15AA335BB9D513547B22367DEF2A6B140282BCE632A9
 ```
 
 ## Features
@@ -70,7 +70,7 @@ The installer definition is in `packaging/SkeldForge.nsi` and builds with NSIS 3
 
 ## Data and uninstalling
 
-Application data is stored in `%LOCALAPPDATA%\SkeldForge`. The official installer warns before uninstalling and removes this data after confirmation.
+Application data is stored in `%LOCALAPPDATA%\SkeldForge`. The official installer warns before uninstalling and removes this data after confirmation. The program itself is always installed in its dedicated per-user directory; the installer does not recursively remove a user-selected folder.
 
 ## Troubleshooting
 
