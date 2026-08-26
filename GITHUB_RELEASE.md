@@ -40,7 +40,7 @@ The installer is self-contained; a separate .NET installation is not required.
 
 Windows SmartScreen may warn about an unknown publisher because this community build is not code signed. Verify the SHA-256 hash before running it:
 
-`057FAAFF188101369C2B5057946E5104D064D7E7FA75BCB3044F9D2AED2AAB44`
+`B8E6C6795815E341501809E60A6DBE4AF2A5A831841910E0E388BE0A37C3EBC2`
 
 ## How it works
 

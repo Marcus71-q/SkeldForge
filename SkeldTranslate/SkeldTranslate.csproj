@@ -13,8 +13,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <GameRefs Condition="'$(GameRefs)' == ''">$(LOCALAPPDATA)\SkeldForge\Backups\VanillaCleanup\2026-08-23_17-06-40_b8304665\files\BepInEx</GameRefs>
+    <GameRefs Condition="'$(GameRefs)' == '' and '$(SKELDTRANSLATE_GAME_REFS)' != ''">$(SKELDTRANSLATE_GAME_REFS)</GameRefs>
   </PropertyGroup>
+
+  <Target Name="ValidateGameReferences" BeforeTargets="ResolveReferences"
+          Condition="'$(GameRefs)' == '' or !Exists('$(GameRefs)\core\BepInEx.Core.dll') or !Exists('$(GameRefs)\interop\Assembly-CSharp.dll')">
+    <Error Text="SkeldTranslate requires local BepInEx IL2CPP references. Set GameRefs with -p:GameRefs=&quot;C:\path\to\BepInEx&quot; or define SKELDTRANSLATE_GAME_REFS. See SkeldTranslate/README.md." />
+  </Target>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\translate-message.png" LogicalName="SkeldTranslate.Assets.translate-message.png" />

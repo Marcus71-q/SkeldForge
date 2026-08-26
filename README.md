@@ -1,5 +1,9 @@
 # SkeldForge
 
+[![Build and test](https://github.com/Marcus71-q/SkeldForge/actions/workflows/build.yml/badge.svg)](https://github.com/Marcus71-q/SkeldForge/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/Marcus71-q/SkeldForge)](https://github.com/Marcus71-q/SkeldForge/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 SkeldForge is a Windows mod manager for Among Us. It keeps each modpack in its own game folder, so you can switch setups without repeatedly copying files into the Steam installation.
 
 Created and maintained by **NyxShade**.
@@ -8,9 +12,15 @@ Created and maintained by **NyxShade**.
 
 ## Download
 
-Download `SkeldForge-v1.0.11-Setup.exe` from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
+Download [`SkeldForge-v1.0.11-Setup.exe`](https://github.com/Marcus71-q/SkeldForge/releases/download/v1.0.11/SkeldForge-v1.0.11-Setup.exe) from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
 
 Windows may show a SmartScreen warning because community builds are not code signed. Release hashes are published alongside each download.
+
+SHA-256 for the official v1.0.11 installer:
+
+```text
+B8E6C6795815E341501809E60A6DBE4AF2A5A831841910E0E388BE0A37C3EBC2
+```
 
 ## Features
 
@@ -55,6 +65,8 @@ dotnet publish .\SkeldForge\SkeldForge.csproj `
 ```
 
 The installer definition is in `packaging/SkeldForge.nsi` and builds with NSIS 3.12 or newer.
+
+`SkeldTranslate` is an optional companion plug-in. It needs local Among Us/BepInEx IL2CPP reference assemblies and is built separately; see [`SkeldTranslate/README.md`](SkeldTranslate/README.md).
 
 ## Data and uninstalling
 

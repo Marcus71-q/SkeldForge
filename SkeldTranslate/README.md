@@ -1,4 +1,4 @@
-# SkeldTranslate 0.3.0
+# SkeldTranslate 0.4.3
 
 Among Us 2026.8.18 / BepInEx 6 IL2CPP için istemci taraflı sohbet çevirisi prototipi.
 
@@ -13,3 +13,14 @@ Among Us 2026.8.18 / BepInEx 6 IL2CPP için istemci taraflı sohbet çevirisi pr
 Gelen mesajlar `Original text (Türkçe çeviri)` biçiminde gösterilir. Sohbet ekranının üstündeki düğme gelen çeviriyi açıp kapatır. Mesaj alanının sağındaki `Çevir` düğmesi Türkçe taslağı İngilizce önizlemeye dönüştürür; mesaj yalnızca normal Enter/mavi ok ile gönderilir.
 
 Mesaj metinleri çeviri için seçilen sağlayıcıya gönderilir; oyuncu adları gönderilmez. MyMemory anahtarsızdır ve kısa sohbetler için tasarlanmıştır; yoğun kullanımda hizmetin günlük sınırları uygulanabilir.
+
+## Kaynaktan derleme
+
+SkeldTranslate, Among Us tarafından üretilen yerel BepInEx IL2CPP başvurularına ihtiyaç duyar. Bu oyun dosyaları depoya dâhil edilmez. `GameRefs`, `core` ve `interop` klasörlerini içeren BepInEx klasörünü göstermelidir:
+
+```powershell
+dotnet build .\SkeldTranslate\SkeldTranslate.csproj -c Release `
+  -p:GameRefs="C:\path\to\Among Us\BepInEx"
+```
+
+Kalıcı yerel kullanım için aynı yolu `SKELDTRANSLATE_GAME_REFS` ortam değişkeninde tanımlayabilirsiniz. Ana SkeldForge çözümü, oyun dosyaları olmadan herkes tarafından derlenebilmesi için yalnızca uygulamayı ve testleri içerir.

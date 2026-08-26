@@ -7,4 +7,8 @@ artifacts/
 *.suo
 *.log
 *.pdb
+*.pfx
+*.snk
+*.env
+.env.*
 SkeldForgeData/

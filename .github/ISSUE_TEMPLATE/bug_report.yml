@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible SkeldForge problem
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach Among Us files, third-party mods, API keys, account data, or private logs.
+  - type: input
+    id: version
+    attributes:
+      label: SkeldForge version
+      placeholder: 1.0.11
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Among Us version
+      placeholder: 2026.8.18
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Explain the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Create a modpack...
+        2. Add a mod...
+        3. Click...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant sanitized log excerpt
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I reproduced this on the latest release.
+          required: true
+        - label: I removed private information and credentials.
+          required: true
