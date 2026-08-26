@@ -6,6 +6,9 @@
 - Loose DLL plugins are analyzed, tracked and installed under `BepInEx/plugins` using the same safety and conflict checks as ZIP packages.
 - Updated all 15 interface languages for ZIP and DLL package selection.
 - The uninstaller now also removes the fallback `%LOCALAPPDATA%\SkeldForgeData` directory for a clean default reinstall.
+- Changed inferred BepInEx, Reactor and MiraAPI results from a hard launch blocker to an advisory warning.
+- Fixed loose DLL and ZIP mods such as HydraMenu being prevented from launching by best-effort dependency detection.
+- Dependency warnings remain available in logs and mod details without blocking the isolated game instance.
 
 ## 1.0.11
 

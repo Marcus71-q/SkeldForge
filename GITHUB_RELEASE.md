@@ -4,6 +4,10 @@ SkeldForge is a Windows mod manager for Among Us. It creates isolated game copie
 
 ## What changed in 1.0.12
 
+- Dependency detection no longer blocks the game from launching.
+- Fixed the recurring `Mod '...' is missing 'BepInEx'` launch error for loose DLL and ZIP mods.
+- Missing BepInEx, Reactor or MiraAPI evidence is now reported as an advisory warning in diagnostics.
+
 - Direct `.dll` mod selection and drag-and-drop support.
 - Loose DLL plugins use the same analysis, conflict detection and ownership tracking as ZIP packages.
 - DLL plugins are installed under `BepInEx/plugins` automatically.
@@ -47,7 +51,7 @@ The installer is self-contained; a separate .NET installation is not required.
 
 Windows SmartScreen may warn about an unknown publisher because this community build is not code signed. Verify the SHA-256 hash before running it:
 
-`335A10EDB2FEB749BE16ED77C2E65263ABAEFF3311EDD1323BBAAB52336E67D4`
+`276ABE8B21FA386E6C8AED9705414C561052B4A43F7CC1E5E26B4FDD6D3B33D7`
 
 ## How it works
 

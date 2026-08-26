@@ -6,6 +6,37 @@ namespace SkeldForge.Tests.Core;
 public sealed class GameLauncherTests
 {
     [Fact]
+    public void MissingDetectedDependency_IsAdvisoryInsteadOfLaunchBlocking()
+    {
+        var instance = new ModpackInfo
+        {
+            Mods =
+            [
+                new ModInfo
+                {
+                    Name = "HydraMenu",
+                    IsEnabled = true,
+                    Dependencies =
+                    [
+                        new DependencyInfo
+                        {
+                            Name = "BepInEx",
+                            Status = DependencyStatus.Missing
+                        }
+                    ]
+                }
+            ]
+        };
+
+        var warnings = GameLauncher.GetDependencyWarnings(instance);
+
+        Assert.Single(warnings);
+        Assert.Contains("HydraMenu", warnings[0]);
+        Assert.Contains("BepInEx", warnings[0]);
+        Assert.Contains("Launch was allowed", warnings[0]);
+    }
+
+    [Fact]
     public void ModdedStartInfo_UsesDirectSteamAwareLaunch()
     {
         var info = GameLauncher.CreateModdedStartInfo(

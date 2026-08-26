@@ -176,15 +176,15 @@ public sealed class GameLauncher
             mod.Dependencies = _dependencyDetector.Evaluate(mod, instance, gameDirectory).ToList();
         }
 
-        var missingDependency = instance.Mods
-            .Where(mod => mod.IsEnabled)
-            .SelectMany(mod => mod.Dependencies.Select(dependency => (Mod: mod, Dependency: dependency)))
-            .FirstOrDefault(item => item.Dependency.Status == DependencyStatus.Missing);
-        if (missingDependency.Dependency is not null)
+        // Dependency detection is intentionally evidence-based and can only provide a
+        // best-effort result.  A loader/provider may be supplied by an untracked file,
+        // generated on first launch, or use a layout/version that SkeldForge does not
+        // know yet.  Treating that heuristic as a hard launch gate made every loose DLL
+        // mod unusable in a clean instance.  Keep the status for diagnostics, but let
+        // BepInEx/the plug-in report the authoritative runtime result.
+        foreach (var warning in GetDependencyWarnings(instance))
         {
-            return OperationResult<GameLaunchResult>.Fail(
-                "Launch.MissingDependency",
-                $"Mod '{missingDependency.Mod.Name}' is missing '{missingDependency.Dependency.Name}'.");
+            await LogWarningAsync(warning).ConfigureAwait(false);
         }
 
         var incorrectlyAppliedDisabledMod = instance.Mods
@@ -278,6 +278,18 @@ public sealed class GameLauncher
         ModpackInfo instance,
         CancellationToken cancellationToken = default)
         => LaunchModdedAsync(instance, cancellationToken);
+
+    internal static IReadOnlyList<string> GetDependencyWarnings(ModpackInfo instance)
+    {
+        ArgumentNullException.ThrowIfNull(instance);
+        return instance.Mods
+            .Where(mod => mod.IsEnabled)
+            .SelectMany(mod => mod.Dependencies
+                .Where(dependency => dependency.Status == DependencyStatus.Missing)
+                .Select(dependency =>
+                    $"Mod '{mod.Name}' may be missing '{dependency.Name}'. Launch was allowed because dependency detection is advisory."))
+            .ToArray();
+    }
 
     private async Task<OperationResult<GameLaunchResult>> StartExecutableAsync(
         string executable,

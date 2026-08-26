@@ -19,14 +19,14 @@ Windows may show a SmartScreen warning because community builds are not code sig
 SHA-256 for the official v1.0.12 installer:
 
 ```text
-335A10EDB2FEB749BE16ED77C2E65263ABAEFF3311EDD1323BBAAB52336E67D4
+276ABE8B21FA386E6C8AED9705414C561052B4A43F7CC1E5E26B4FDD6D3B33D7
 ```
 
 ## Features
 
 - Finds the Steam installation of Among Us.
 - Creates independent modpack copies.
-- Imports mod ZIP files into a reusable library.
+- Imports mod ZIP and DLL files into a reusable library.
 - Checks archives for unsafe paths before extraction.
 - Tracks installed files and reports mod conflicts.
 - Detects common BepInEx, Reactor and MiraAPI dependencies.
