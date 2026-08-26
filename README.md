@@ -12,14 +12,14 @@ Created and maintained by **NyxShade**.
 
 ## Download
 
-Download [`SkeldForge-v1.0.11-Setup.exe`](https://github.com/Marcus71-q/SkeldForge/releases/download/v1.0.11/SkeldForge-v1.0.11-Setup.exe) from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
+Download [`SkeldForge-v1.0.12-Setup.exe`](https://github.com/Marcus71-q/SkeldForge/releases/download/v1.0.12/SkeldForge-v1.0.12-Setup.exe) from the latest GitHub release and run the installer. It adds shortcuts to the desktop and Start menu and includes the .NET runtime.
 
 Windows may show a SmartScreen warning because community builds are not code signed. Release hashes are published alongside each download.
 
-SHA-256 for the official v1.0.11 installer:
+SHA-256 for the official v1.0.12 installer:
 
 ```text
-B8E6C6795815E341501809E60A6DBE4AF2A5A831841910E0E388BE0A37C3EBC2
+335A10EDB2FEB749BE16ED77C2E65263ABAEFF3311EDD1323BBAAB52336E67D4
 ```
 
 ## Features

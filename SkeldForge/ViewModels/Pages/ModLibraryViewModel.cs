@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using SkeldForge.Core;
 using SkeldForge.Models;
 using SkeldForge.UI.Commands;
 using SkeldForge.ViewModels.Infrastructure;
@@ -44,8 +45,23 @@ public sealed class ModLibraryViewModel : ObservableObject, IRefreshableViewMode
 
     private async Task ImportAsync()
     {
-        var path = _main.Root.Dialogs.PickZip();
-        if (path is null) return;
+        var selectedPath = _main.Root.Dialogs.PickModPackage();
+        if (selectedPath is null) return;
+        ModPackageInput input;
+        try
+        {
+            input = ModPackageInput.Prepare(selectedPath);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
+        {
+            await _main.Root.Dialogs.ShowErrorAsync(
+                _main.Text["Dialog.ErrorTitle"], _main.Text["Error.ZipCorrupt"], ex.Message);
+            return;
+        }
+
+        using (input)
+        {
+        var path = input.ArchivePath;
         var analysis = await _main.RunBusyAsync("Progress.Analyzing", _ => _main.Root.AnalyzePackageAsync(path));
         if (!analysis.IsSafe)
         {
@@ -57,6 +73,7 @@ public sealed class ModLibraryViewModel : ObservableObject, IRefreshableViewMode
         if (!result.Success || result.Value is null) { await _main.ShowFailureAsync(result); return; }
         await _main.RefreshCollectionsAsync();
         _main.ShowStatus(result.Value.IsDuplicate ? _main.Text["Package.Duplicate"] : _main.Text.Format("Success.ModImported", result.Value.Mod.Name));
+        }
     }
 
     private bool Filter(object value) => value is ModCardViewModel mod &&

@@ -1,5 +1,12 @@
 # Release notes
 
+## 1.0.12
+
+- Added direct `.dll` mod selection and drag-and-drop support.
+- Loose DLL plugins are analyzed, tracked and installed under `BepInEx/plugins` using the same safety and conflict checks as ZIP packages.
+- Updated all 15 interface languages for ZIP and DLL package selection.
+- The uninstaller now also removes the fallback `%LOCALAPPDATA%\SkeldForgeData` directory for a clean default reinstall.
+
 ## 1.0.11
 
 - Allowed multiple isolated modpacks to use the same display name.

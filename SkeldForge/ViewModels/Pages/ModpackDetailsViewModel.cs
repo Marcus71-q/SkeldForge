@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using SkeldForge.Core;
 using SkeldForge.Models;
 using SkeldForge.UI.Commands;
 using SkeldForge.ViewModels.Infrastructure;
@@ -78,7 +79,7 @@ public sealed class ModpackDetailsViewModel : ObservableObject
 
     public async Task HandleDroppedFilesAsync(IReadOnlyList<string> files)
     {
-        if (files.Count != 1 || !string.Equals(Path.GetExtension(files[0]), ".zip", StringComparison.OrdinalIgnoreCase))
+        if (files.Count != 1 || !IsSupportedPackage(files[0]))
         {
             await _main.Root.Dialogs.ShowInfoAsync(_main.Text["Dialog.WarningTitle"], _main.Text["Package.DropOnlyZip"]);
             return;
@@ -88,12 +89,27 @@ public sealed class ModpackDetailsViewModel : ObservableObject
 
     private async Task SelectAndInstallAsync()
     {
-        var path = _main.Root.Dialogs.PickZip();
+        var path = _main.Root.Dialogs.PickModPackage();
         if (path is not null) await AnalyzeAndInstallAsync(path);
     }
 
     private async Task AnalyzeAndInstallAsync(string path)
     {
+        ModPackageInput input;
+        try
+        {
+            input = ModPackageInput.Prepare(path);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
+        {
+            await _main.Root.Dialogs.ShowErrorAsync(
+                _main.Text["Dialog.ErrorTitle"], _main.Text["Error.ZipCorrupt"], ex.Message);
+            return;
+        }
+
+        using (input)
+        {
+            path = input.ArchivePath;
         var analysis = await _main.RunBusyAsync("Progress.Analyzing", _ => _main.Root.AnalyzePackageAsync(path));
         if (!analysis.IsSafe)
         {
@@ -108,6 +124,14 @@ public sealed class ModpackDetailsViewModel : ObservableObject
         SetModel(result.Value.Modpack);
         await _main.RefreshCollectionsAsync();
         _main.ShowStatus(_main.Text.Format("Success.ModInstalled", result.Value.Mod.Name));
+        }
+    }
+
+    private static bool IsSupportedPackage(string path)
+    {
+        var extension = Path.GetExtension(path);
+        return extension.Equals(".zip", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".dll", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task ToggleModAsync(ModCardViewModel? card)

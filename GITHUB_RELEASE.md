@@ -1,8 +1,15 @@
-# SkeldForge 1.0.11
+# SkeldForge 1.0.12
 
 SkeldForge is a Windows mod manager for Among Us. It creates isolated game copies for each modpack, allowing you to switch between vanilla and modded setups without repeatedly changing the original Steam installation.
 
-## What changed in 1.0.11
+## What changed in 1.0.12
+
+- Direct `.dll` mod selection and drag-and-drop support.
+- Loose DLL plugins use the same analysis, conflict detection and ownership tracking as ZIP packages.
+- DLL plugins are installed under `BepInEx/plugins` automatically.
+- The uninstaller also clears the fallback local SkeldForge data directory.
+
+## Previous 1.0.11 improvements
 
 - Multiple modpacks can now use the same display name while remaining fully isolated.
 - The same mod can be installed independently in any number of modpacks.
@@ -30,17 +37,17 @@ English is selected on a fresh installation. You can change the interface langua
 
 ## Installation
 
-1. Download `SkeldForge-v1.0.11-Setup.exe` below.
+1. Download `SkeldForge-v1.0.12-Setup.exe` below.
 2. Run the installer.
 3. Start SkeldForge using the desktop or Start menu shortcut.
 4. Confirm the detected Steam Among Us folder, or select it manually.
-5. Create a modpack and add a compatible mod ZIP file.
+5. Create a modpack and add a compatible mod ZIP or DLL file.
 
 The installer is self-contained; a separate .NET installation is not required.
 
 Windows SmartScreen may warn about an unknown publisher because this community build is not code signed. Verify the SHA-256 hash before running it:
 
-`B8E6C6795815E341501809E60A6DBE4AF2A5A831841910E0E388BE0A37C3EBC2`
+`335A10EDB2FEB749BE16ED77C2E65263ABAEFF3311EDD1323BBAAB52336E67D4`
 
 ## How it works
 

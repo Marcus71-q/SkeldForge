@@ -3,14 +3,14 @@ Unicode True
 !include "MUI2.nsh"
 
 !define APP_NAME "SkeldForge"
-!define APP_VERSION "1.0.11"
+!define APP_VERSION "1.0.12"
 !define APP_PUBLISHER "NyxShade"
 !define APP_EXE "SkeldForge.exe"
 !define APP_ID "SkeldForge.NyxShade"
-!define PUBLISH_DIR "..\artifacts\github-release\SkeldForge-v1.0.11-win-x64"
+!define PUBLISH_DIR "..\artifacts\github-release\SkeldForge-v1.0.12-win-x64"
 
 Name "${APP_NAME} ${APP_VERSION}"
-OutFile "..\artifacts\github-release\SkeldForge-v1.0.11-Setup.exe"
+OutFile "..\artifacts\github-release\SkeldForge-v1.0.12-Setup.exe"
 InstallDir "$LOCALAPPDATA\Programs\SkeldForge"
 InstallDirRegKey HKCU "Software\${APP_ID}" "InstallLocation"
 RequestExecutionLevel user
@@ -20,7 +20,7 @@ BrandingText "${APP_NAME} • NyxShade"
 Icon "..\SkeldForge\Assets\SkeldForge.ico"
 UninstallIcon "..\SkeldForge\Assets\SkeldForge.ico"
 
-VIProductVersion "1.0.11.0"
+VIProductVersion "1.0.12.0"
 VIAddVersionKey /LANG=1055 "ProductName" "${APP_NAME}"
 VIAddVersionKey /LANG=1055 "ProductVersion" "${APP_VERSION}"
 VIAddVersionKey /LANG=1055 "CompanyName" "${APP_PUBLISHER}"
@@ -51,21 +51,24 @@ Section "SkeldForge" SEC_MAIN
   SetOutPath "$INSTDIR"
   File /r "${PUBLISH_DIR}\*.*"
 
-  WriteUninstaller "$INSTDIR\SkeldForge-Kaldır.exe"
+  ; Remove names used by older installers during an in-place upgrade.
+  Delete "$INSTDIR\SkeldForge-Kaldır.exe"
+  Delete "$SMPROGRAMS\SkeldForge\SkeldForge'u Kaldır.lnk"
+  WriteUninstaller "$INSTDIR\SkeldForge Deleter.exe"
   WriteRegStr HKCU "Software\${APP_ID}" "InstallLocation" "$INSTDIR"
 
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "DisplayName" "${APP_NAME}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "DisplayVersion" "${APP_VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "Publisher" "${APP_PUBLISHER}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "DisplayIcon" "$INSTDIR\${APP_EXE}"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "UninstallString" '"$INSTDIR\SkeldForge-Kaldır.exe"'
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "QuietUninstallString" '"$INSTDIR\SkeldForge-Kaldır.exe" /S'
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "UninstallString" '"$INSTDIR\SkeldForge Deleter.exe"'
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "QuietUninstallString" '"$INSTDIR\SkeldForge Deleter.exe" /S'
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "NoModify" 1
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}" "NoRepair" 1
 
   CreateDirectory "$SMPROGRAMS\SkeldForge"
   CreateShortcut "$SMPROGRAMS\SkeldForge\SkeldForge.lnk" "$INSTDIR\${APP_EXE}" "" "$INSTDIR\${APP_EXE}" 0
-  CreateShortcut "$SMPROGRAMS\SkeldForge\SkeldForge'u Kaldır.lnk" "$INSTDIR\SkeldForge-Kaldır.exe"
+  CreateShortcut "$SMPROGRAMS\SkeldForge\SkeldForge Deleter.lnk" "$INSTDIR\SkeldForge Deleter.exe"
   CreateShortcut "$DESKTOP\SkeldForge.lnk" "$INSTDIR\${APP_EXE}" "" "$INSTDIR\${APP_EXE}" 0
 SectionEnd
 
@@ -81,6 +84,7 @@ Section "Uninstall"
   DeleteRegKey HKCU "Software\${APP_ID}"
   RMDir /r "$INSTDIR"
   RMDir /r "$LOCALAPPDATA\SkeldForge"
+  RMDir /r "$LOCALAPPDATA\SkeldForgeData"
 SectionEnd
 
 Function un.onInit

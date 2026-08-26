@@ -13,7 +13,7 @@ public interface IDialogService
     Task<bool> ConfirmAsync(string title, string message, bool isDestructive = false);
     Task<string?> PromptAsync(string title, string label, string initialValue = "");
     string? PickFolder(string? initialDirectory = null);
-    string? PickZip(string? initialDirectory = null);
+    string? PickModPackage(string? initialDirectory = null);
     string? PickSkeldpack(string? initialDirectory = null);
     string? SaveSkeldpack(string suggestedName, string? initialDirectory = null);
     Task<bool> ReviewPackageAsync(ModPackageAnalysis analysis);
@@ -59,8 +59,8 @@ public sealed class DialogService : IDialogService
         return dialog.ShowDialog(FindOwner()) == true ? dialog.FolderName : null;
     }
 
-    public string? PickZip(string? initialDirectory = null) => PickFile(
-        "ZIP archive (*.zip)|*.zip|All files (*.*)|*.*", initialDirectory);
+    public string? PickModPackage(string? initialDirectory = null) => PickFile(
+        "Among Us mod package (*.zip;*.dll)|*.zip;*.dll|ZIP archive (*.zip)|*.zip|BepInEx plugin (*.dll)|*.dll", initialDirectory);
 
     public string? PickSkeldpack(string? initialDirectory = null) => PickFile(
         "SkeldForge modpack (*.skeldpack)|*.skeldpack|All files (*.*)|*.*", initialDirectory);
